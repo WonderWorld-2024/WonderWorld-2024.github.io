@@ -641,6 +641,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            // Interactive slider initialization (keep this as it was)
             $('.slider-for-interactive').on('beforeChange', function (event, slick, currentSlide, nextSlide) {
                 var video = $(slick.$slides[nextSlide]).find('video');
                 var videoSource = video.find('source[data-lazy]');
@@ -670,16 +671,39 @@
                 speed: 300,
                 autoplaySpeed: 100000,
             });
-
-            $('.slider-for-complete').on('beforeChange', function (event, slick, currentSlide, nextSlide) {
-                var video = $(slick.$slides[nextSlide]).find('video');
-                var videoSource = video.find('source[data-lazy]');
-                if (videoSource.length) {
-                    videoSource.attr('src', videoSource.data('lazy'));
-                    videoSource.removeAttr('data-lazy');
-                    video.get(0).load();
+    
+            // Complete slider initialization (modified)
+            $('.slider-for-complete').on('init', function(event, slick){
+                var firstVideo = $(slick.$slides[0]).find('video');
+                var firstVideoSource = firstVideo.find('source');
+                if (firstVideoSource.attr('data-lazy')) {
+                    firstVideoSource.attr('src', firstVideoSource.attr('data-lazy'));
+                    firstVideoSource.removeAttr('data-lazy');
+                    firstVideo[0].load();
+                    firstVideo[0].play();
                 }
             });
+    
+            $('.slider-for-complete').on('beforeChange', function (event, slick, currentSlide, nextSlide) {
+                var nextSlideElem = $(slick.$slides[nextSlide]);
+                var video = nextSlideElem.find('video');
+                var source = video.find('source');
+                
+                if (source.attr('data-lazy')) {
+                    source.attr('src', source.attr('data-lazy'));
+                    source.removeAttr('data-lazy');
+                    video[0].load();
+                }
+            });
+    
+            $('.slider-for-complete').on('afterChange', function(event, slick, currentSlide) {
+                var currentSlideElem = $(slick.$slides[currentSlide]);
+                var video = currentSlideElem.find('video');
+                if (video.length) {
+                    video[0].play();
+                }
+            });
+    
             $('.slider-nav-complete').slick({
                 slidesToShow: 3,
                 slidesToScroll: 1,
@@ -691,6 +715,7 @@
                 nextArrow: '<div class="arrow right"></div>',
                 prevArrow: '<div class="arrow left"></div>',
             });
+    
             $('.slider-for-complete').slick({
                 slidesToShow: 1,
                 slidesToScroll: 1,
@@ -699,9 +724,9 @@
                 autoplay: true,
                 speed: 300,
                 autoplaySpeed: 100000,
+                lazyLoad: 'ondemand'
             });
         });
-
     </script>
     <script src="canvas.js"></script>
     <script>
