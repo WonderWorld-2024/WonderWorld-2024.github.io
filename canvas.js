@@ -859,6 +859,12 @@ async function main() {
             radius = 9999;
             yaw = -0.13;
         }
+        else if (activeButtonUrl.includes('city_hall_monet')) {
+            movement = [0, 0, 0];
+            bbox = [-9999, 9999, -9999, 9999, -0.1, 0.35, -9999, 9999];
+            active_camera.fx = active_camera.fy = 960;
+            radius = 0.13;
+        }
         else if (activeButtonUrl.includes('city_hall')) {
             movement = [0, 0, 0];
             bbox = [-9999, 9999, -9999, 9999, -0.1, 0.35, -1.2, 2.7];
